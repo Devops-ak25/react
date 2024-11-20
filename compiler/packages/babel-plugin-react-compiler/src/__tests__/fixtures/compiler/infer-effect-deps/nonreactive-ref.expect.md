@@ -1,0 +1,45 @@
+
+## Input
+
+```javascript
+// @inferEffectDependencies
+import {useEffect, useRef} from 'react';
+import {print} from 'shared-runtime';
+
+function NonReactiveRefInEffect() {
+  const ref = useRef('initial value');
+  useEffect(() => print(ref.current));
+}
+
+// Not implementing fixture as auto-deps means that this effect needs to fire
+// (and print) multiple times
+
+```
+
+## Code
+
+```javascript
+import { c as _c } from "react/compiler-runtime"; // @inferEffectDependencies
+import { useEffect, useRef } from "react";
+import { print } from "shared-runtime";
+
+function NonReactiveRefInEffect() {
+  const $ = _c(1);
+  const ref = useRef("initial value");
+  let t0;
+  if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
+    t0 = () => print(ref.current);
+    $[0] = t0;
+  } else {
+    t0 = $[0];
+  }
+  useEffect(t0, []);
+}
+
+// Not implementing fixture as auto-deps means that this effect needs to fire
+// (and print) multiple times
+
+```
+      
+### Eval output
+(kind: exception) Fixture not implemented
